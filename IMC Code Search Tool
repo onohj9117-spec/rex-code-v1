@@ -1,52 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rex Code V1 | HVAC Code Search</title>
-<style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0f172a;color:#e2e8f0;display:flex;justify-content:center;padding:24px;}
-.wrap{max-width:680px;width:100%}
-h1{font-size:28px;margin:0 0 8px}
-p.sub{color:#94a3b8;margin:0 0 16px}
-.search{display:flex;gap:8px}
-input{flex:1;padding:14px 16px;border-radius:12px;border:1px solid #334155;background:#0b1220;color:#e2e8f0;font-size:16px}
-button{padding:14px 18px;border-radius:12px;border:0;background:#38bdf8;color:#0b1220;font-weight:700;cursor:pointer}
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rex Code V1 - IMC 25 Codes</title>
+<style>body{font-family:system-ui;background:#0f172a;color:#e2e8f0;display:flex;justify-content:center;padding:24px}
+.wrap{max-width:680px;width:100%}h1{font-size:28px;margin:0 0 8px}p.sub{color:#94a3b8;margin:0 0 16px;font-size:13px}
+.search{display:flex;gap:8px}input{flex:1;padding:14px;border-radius:12px;border:1px solid #334155;background:#0b1220;color:#e2e8f0;font-size:16px}
+button{padding:14px 18px;border-radius:12px;border:0;background:#38bdf8;color:#0b1220;font-weight:700}
 .card{margin-top:16px;background:#111827;border:1px solid #1f2937;border-radius:16px;padding:16px}
-.code{font-weight:700;font-size:18px}
-.desc{color:#cbd5e1;margin-top:6px}
-.hint{color:#94a3b8;font-size:12px;margin-top:8px}
-</style>
+.code{font-weight:700;font-size:18px}.desc{color:#cbd5e1;margin-top:6px}.hint{color:#94a3b8;font-size:12px;margin-top:8px}</style>
 </head>
-<body>
-<div class="wrap">
-<h1>Rex Code V1</h1>
-<p class="sub">Type: B-vent, F-gas, Makeup, etc</p>
-<div class="search">
-<input id="q" placeholder="Search IMC...">
-<button id="go">Search</button>
-</div>
-<div id="out" class="card" style="display:none">
-<div class="code" id="code"></div>
-<div class="desc" id="desc"></div>
-<div class="hint" id="hint"></div>
-</div>
-</div>
+<body><div class="wrap"><h1>Rex Code V1</h1><p class="sub">25 IMC Codes | Search: vent, hood, dryer, makeup, combustion, etc</p>
+<div class="search"><input id="q" placeholder="Type: B-vent, Hood, Dryer..."><button id="go">Search</button></div>
+<div id="out" class="card" style="display:none"><div class="code" id="code"></div><div class="desc" id="desc"></div><div class="hint" id="hint"></div></div></div>
 <script>
 const DB={
-"b-vent":{"code":"IMC §308.5","desc":"Type B gas vents. 6in clearance to combustibles. Terminate 2ft above roof, 10ft from parapet.","hint":"Gas vents only. Not for grease/wood."},
-"f-gas":{"code":"IMC §501.1","desc":"Exhaust systems shall discharge to outdoors. No screen that blocks flow. No recirculation.","hint":"Applies to all mechanical exhaust."},
-"makeup":{"code":"IMC §501.4","desc":"Exhaust >400 CFM requires makeup air equal to exhaust minus 10%.","hint":"Commercial kitchens/hoods."}
+"b-vent":{"code":"IMC §308.5","desc":"Type B gas vents. 6in clearance to combustibles. Terminate min 2ft above roof, 10ft rule.","hint":"Gas vents only. Not for B-L."},
+"f-gas":{"code":"IMC §501.1","desc":"All mechanical exhaust must discharge to outdoors. No recirculation to building.","hint":"Applies to all exhaust systems."},
+"makeup":{"code":"IMC §501.4","desc":"Exhaust >400 CFM requires makeup air. Provide 90% of exhaust CFM.","hint":"Kitchens, labs, large exhaust."},
+"hood":{"code":"IMC §507","desc":"Commercial cooking needs Type I hood for grease, Type II for heat/steam only.","hint":"Type I = solid fuel/grease."},
+"dryer":{"code":"IMC §504","desc":"Clothes dryer exhaust max 25ft length. Deduct 2.5ft per 45deg, 5ft per 90deg. No screens.","hint":"Metal duct only. No PVC."},
+"combustion":{"code":"IMC §701","desc":"Fuel-burning appliances need combustion air. 1 sq in per 1000 BTU total input.","hint":"Two openings required: high + low."},
+"clearance":{"code":"IMC §308","desc":"Appliances shall have clearances per listing. If not listed, use Table 308.2.","hint":"Check nameplate first."},
+"duct":{"code":"IMC §502","desc":"Exhaust ducts shall be galvanized steel, stainless, copper, or aluminum. Min 0.019in.","hint":"No combustible duct material."},
+"terminate":{"code":"IMC §501.3","desc":"Exhaust outlets min 3ft from property line, 10ft from mech air intakes.","hint":"No exhaust into soffits."},
+"kitchen":{"code":"IMC §507.2","desc":"Type I hood required over appliances producing grease/smoke. UL 710 listed.","hint":"Charbroilers, fryers, woks."},
+"grease":{"code":"IMC §506","desc":"Grease ducts min 16 ga steel. Welded, liquid-tight. Access every 12ft.","hint":"No screws inside duct."},
+"fire":{"code":"IMC §509","desc":"Automatic fire suppression required for Type I hoods over commercial cooking.","hint":"NFPA 96 compliance."},
+"fan":{"code":"IMC §503","desc":"Exhaust fans shall be rated for duty. Roof fans min 10in above roof.","hint":"Must be accessible."},
+"intake":{"code":"IMC §401.4","desc":"Outside air intakes min 10ft from exhaust, 3ft from property line.","hint":"Screen to prevent debris."},
+"ventilation":{"code":"IMC §403","desc":"Mechanical ventilation rates per Table 403.3.1.1 based on occupancy.","hint":"CFM per person + area."},
+"garage":{"code":"IMC §404","desc":"Enclosed parking garages require mech ventilation. 0.75 CFM per sq ft.","hint":"CO detection required."},
+"toilet":{"code":"IMC §404.1","desc":"Toilet rooms shall be exhausted. 50 CFM intermittent or 20 CFM continuous.","hint":"No recirculation allowed."},
+"mdf":{"code":"IMC §603","desc":"Duct construction min SMACNA standards. Seal all transverse joints.","hint":"Leakage Class 3 or better."},
+"return":{"code":"IMC §602","desc":"Return air shall not be drawn from garage, kitchen, boiler room.","hint":"Plenum use restricted."},
+"access":{"code":"IMC §306","desc":"Appliances shall be accessible for service. 30in x 30in working space.","hint":"No blocking access."},
+"condensate":{"code":"IMC §307","desc":"Condensate drains required for cooling coils. Air gap to indirect waste.","hint":"No direct connection to sanitary."},
+"fuel":{"code":"IMC §202","desc":"Fuel gas piping per IFGC. Shutoff valve within 6ft of appliance.","hint":"Drip leg required."},
+"chimney":{"code":"IMC §802","desc":"Vents for gas appliances per NFPA 54. Cannot vent solid fuel in gas vent.","hint":"Size per vent tables."},
+"range":{"code":"IMC §507.2.1","desc":"Domestic cooking in commercial occupancy requires Type I hood if >400 CFM.","hint":"Residential range exception."},
+"test":{"code":"IMC §106","desc":"Systems shall be tested to verify airflow and operation before final.","hint":"Balance report required."}
 };
-function run(){
-const k=document.getElementById('q').value.toLowerCase().trim();
-const out=document.getElementById('out');
-let hit=null;
+function run(){const k=document.getElementById('q').value.toLowerCase().trim();const out=document.getElementById('out');let hit=null;
 for(const key in DB){if(k.includes(key)){hit=DB[key];break;}}
 if(hit){document.getElementById('code').textContent=hit.code;document.getElementById('desc').textContent=hit.desc;document.getElementById('hint').textContent=hit.hint;out.style.display='block';}
-else{document.getElementById('code').textContent='No match';document.getElementById('desc').textContent='Try: B-vent, F-gas, Makeup';document.getElementById('hint').textContent='';out.style.display='block';}
-document.getElementById('go').onclick=run;
-document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
-</script>
-</body>
-</html>
+else{document.getElementById('code').textContent='No match';document.getElementById('desc').textContent='Try: B-vent, Hood, Dryer, Makeup, Combustion';document.getElementById('hint').textContent='';out.style.display='block';}}
+document.getElementById('go').onclick=run;document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+</script></body></html>
