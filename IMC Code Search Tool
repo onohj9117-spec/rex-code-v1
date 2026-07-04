@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rex Code V1 | HVAC Code Search</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0f172a;color:#e2e8f0;display:flex;justify-content:center;padding:24px;}
+.wrap{max-width:680px;width:100%}
+h1{font-size:28px;margin:0 0 8px}
+p.sub{color:#94a3b8;margin:0 0 16px}
+.search{display:flex;gap:8px}
+input{flex:1;padding:14px 16px;border-radius:12px;border:1px solid #334155;background:#0b1220;color:#e2e8f0;font-size:16px}
+button{padding:14px 18px;border-radius:12px;border:0;background:#38bdf8;color:#0b1220;font-weight:700;cursor:pointer}
+.card{margin-top:16px;background:#111827;border:1px solid #1f2937;border-radius:16px;padding:16px}
+.code{font-weight:700;font-size:18px}
+.desc{color:#cbd5e1;margin-top:6px}
+.hint{color:#94a3b8;font-size:12px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Rex Code V1</h1>
+<p class="sub">Type: B-vent, F-gas, Makeup, etc</p>
+<div class="search">
+<input id="q" placeholder="Search IMC...">
+<button id="go">Search</button>
+</div>
+<div id="out" class="card" style="display:none">
+<div class="code" id="code"></div>
+<div class="desc" id="desc"></div>
+<div class="hint" id="hint"></div>
+</div>
+</div>
+<script>
+const DB={
+"b-vent":{"code":"IMC §308.5","desc":"Type B gas vents. 6in clearance to combustibles. Terminate 2ft above roof, 10ft from parapet.","hint":"Gas vents only. Not for grease/wood."},
+"f-gas":{"code":"IMC §501.1","desc":"Exhaust systems shall discharge to outdoors. No screen that blocks flow. No recirculation.","hint":"Applies to all mechanical exhaust."},
+"makeup":{"code":"IMC §501.4","desc":"Exhaust >400 CFM requires makeup air equal to exhaust minus 10%.","hint":"Commercial kitchens/hoods."}
+};
+function run(){
+const k=document.getElementById('q').value.toLowerCase().trim();
+const out=document.getElementById('out');
+let hit=null;
+for(const key in DB){if(k.includes(key)){hit=DB[key];break;}}
+if(hit){document.getElementById('code').textContent=hit.code;document.getElementById('desc').textContent=hit.desc;document.getElementById('hint').textContent=hit.hint;out.style.display='block';}
+else{document.getElementById('code').textContent='No match';document.getElementById('desc').textContent='Try: B-vent, F-gas, Makeup';document.getElementById('hint').textContent='';out.style.display='block';}
+document.getElementById('go').onclick=run;
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+</script>
+</body>
+</html>
